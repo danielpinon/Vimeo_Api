@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Vimeo Javascript oEmbed Example</title>
+    
+</head>
+<body>
+
+    <h1>Vimeo Javascript oEmbed Example</h1>
+<div data-vimeo-id="76979871" data-vimeo-defer id="made-in-ny"></div>
+
+<script src="https://player.vimeo.com/api/player.js"></script>
+<script>
+	// Opções do video
+    var options = {
+        width: 0,
+    };
+	// Varificação se tem repetido
+	var verifica = 0;
+	// Numero total de repetições por segundo 10 Segundos
+	var quantidadeDeVerificacoes = 10;
+	// Variável de ultimo tempo capturado
+	var ultimoTime;
+	// Variável do tempo do vídeo
+	var videoTime;
+	// Define a variável para setar o tempo 
+	var timer;
+	// Segundos do intervalo
+	var segundos = 1000;
+	// Define o vídeo em objeto
+    var player = new Vimeo.Player('made-in-ny', options);
+	// Seta a origem do inicio do vídeo
+	player.setCurrentTime(0);
+	// Define uma ação ao iniciar o vídeo
+	player.on('play', function(){console.log('iniciou o video'); verifica = 0; timer = setInterval(function(){processaVideo();},segundos);});
+	// Função para gerar o tempo do vídeo
+	function getTime(){
+		// Inicia no objeto a funação get do tempo corrente
+		player.getCurrentTime().then(function(seconds) {
+			// seconds = the current playback position
+			// Armazena na variável o ultimo segundo capturado
+			videoTime = seconds;
+		}).catch(function(error) {
+			// Se caso tiver erro executar uma ação
+			// an error occurred
+			console.log(error);
+		});
+	}
+	function processaVideo(){ 
+		// Pergunta se o ultimo tempo armazenado é o mesmo do capturado
+	 	if(ultimoTime == videoTime){
+			console.log(verifica);
+			// Verifica se essa verificação é igual a muito tempo se sim ele puxa o tempo novamente se estourar ele para
+			if(verifica<quantidadeDeVerificacoes){getTime();}else{clearInterval(timer);}
+			// Armazena no ultimo tempo o tempo do video capturado
+			ultimoTime = videoTime;
+			// Adiciona mais um na variável de verificação
+			verifica++;
+		}else{
+			// Se caso for diferente 
+			verifica = 0;
+			// Armazena no ultimo tempo o tempo do video capturado
+			ultimoTime = videoTime;
+		}
+	}
+	 
+</script>
+</body>
+
+</html>
